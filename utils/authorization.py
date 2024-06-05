@@ -3,9 +3,9 @@ import os
 
 from fastapi import HTTPException
 
-from chatgpt.refreshToken import rt2ac, save_refresh_map
+from chatgpt.refreshToken import rt2ac
 from utils.Logger import logger
-from utils.config import authorization_list
+from utils.config import authorization_list, tokens_in_env
 
 count = 0
 token_list = []
@@ -24,6 +24,13 @@ if os.path.exists(TOKENS_FILE):
 else:
     with open(TOKENS_FILE, "w", encoding="utf-8") as f:
         pass
+
+if tokens_in_env:
+    # 从环境变量中读取tokens
+    if ',' in tokens_in_env:
+        token_list.extend(tokens_in_env.split(','))
+    else:
+        token_list.append(tokens_in_env)
 
 if token_list:
     logger.info(f"Token list count: {len(token_list)}")
